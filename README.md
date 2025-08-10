@@ -1,10 +1,15 @@
 ````markdown
-# kKuberoast
+# kuberoast2
 
- **Kubernetes misconfiguration & attack-path scanner**. Fast, readable, and opinionated toward real-world escalation paths.
+From-scratch, red-team–oriented **Kubernetes misconfiguration & attack-path scanner**. Fast, readable, and opinionated toward real-world escalation paths.
 
 > ⚠️ **Ethical use only.** Run only on clusters you own or have explicit written permission to test.
 
+<p align="left">
+  <a href="https://www.python.org/downloads/"><img alt="Python 3.9+" src="https://img.shields.io/badge/python-3.9%2B-blue.svg"></a>
+  <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-green.svg"></a>
+  <img alt="Status" src="https://img.shields.io/badge/status-MVP%20%2B%20active%20dev-orange">
+</p>
 
 ---
 
