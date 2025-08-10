@@ -1,6 +1,5 @@
-````markdown
-#Kuberoast
-
+````markdown ````
+### Kuberoast
 From-scratch, red-team–oriented **Kubernetes misconfiguration & attack-path scanner**. Fast, readable, and opinionated toward real-world escalation paths.
 
 > ⚠️ **Ethical use only.** Run only on clusters you own or have explicit written permission to test.
@@ -34,17 +33,17 @@ From-scratch, red-team–oriented **Kubernetes misconfiguration & attack-path sc
 - **Policy engines presence**: warns if neither **Kyverno** nor **Gatekeeper** CRDs are present.
 - **Reports**: JSON, terminal-aligned Text, and dark-themed HTML (clean margins & padding).
 - **Graceful RBAC handling**: partial results even when some APIs are 401/403.
-
+````
 ---
-
+````
 ## Requirements
 - **Python**: 3.9+
 - **Packages** (auto-installed via `pyproject.toml`):
   - `kubernetes`, `pydantic`, `typing-extensions`, `PyYAML`
 - **Access**: a kube context or in-cluster SA with read permissions (see RBAC below).
-
+````
 ---
-
+````
 ## Installation
 
 ### A) From source (recommended for contributors)
@@ -53,7 +52,8 @@ git clone https://github.com/<you>/kuberoast2
 cd kuberoast2
 python -m pip install -e .
 ````
-
+````
+````
 ### B) User-wide with pipx
 
 ```bash
