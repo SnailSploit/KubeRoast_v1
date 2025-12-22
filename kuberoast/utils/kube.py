@@ -11,6 +11,8 @@ def load_clients() -> Dict[str, Any]:
         "core": client.CoreV1Api(),
         "apps": client.AppsV1Api(),
         "rbac": client.RbacAuthorizationV1Api(),
+        "networking": client.NetworkingV1Api(),
+        "apiextensions": client.ApiextensionsV1Api(),
         "version": client.VersionApi(),
     }
 
@@ -46,6 +48,30 @@ def list_rbac(rbac):
 def list_all_secrets(core) -> List:
     try:
         return core.list_secret_for_all_namespaces().items or []
+    except ApiException as e:
+        if e.status in (401,403):
+            return []
+        raise
+
+def list_all_services(core) -> List:
+    try:
+        return core.list_service_for_all_namespaces().items or []
+    except ApiException as e:
+        if e.status in (401,403):
+            return []
+        raise
+
+def list_all_ingresses(networking) -> List:
+    try:
+        return networking.list_ingress_for_all_namespaces().items or []
+    except ApiException as e:
+        if e.status in (401,403):
+            return []
+        raise
+
+def list_all_crds(apiext) -> List:
+    try:
+        return apiext.list_custom_resource_definition().items or []
     except ApiException as e:
         if e.status in (401,403):
             return []

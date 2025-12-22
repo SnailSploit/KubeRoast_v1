@@ -88,6 +88,16 @@ def analyze_attack_paths(roles, croles, rbs, crbs, pods) -> List[Finding]:
             risky.append("can create roles")
         if has_perm(principal, "create", "pods/exec") or has_perm(principal, "create", "pods/attach") or has_perm(principal, "get", "pods/exec"):
             risky.append("can exec/attach to pods")
+        if has_perm(principal, "update", "pods") or has_perm(principal, "patch", "pods"):
+            risky.append("can update/patch pod specs")
+        if has_perm(principal, "delete", "pods") or has_perm(principal, "delete", "secrets"):
+            risky.append("can delete critical resources")
+        if has_perm(principal, "create", "persistentvolumes") or has_perm(principal, "create", "persistentvolumeclaims"):
+            risky.append("can create persistent volumes")
+        if has_perm(principal, "update", "nodes") or has_perm(principal, "patch", "nodes"):
+            risky.append("can modify node configurations")
+        if has_perm(principal, "create", "tokenreviews") and has_perm(principal, "create", "serviceaccounts/token"):
+            risky.append("can create service account tokens")
 
         if risky:
             pods_using = sorted(sa_to_pods.get(principal, []))
