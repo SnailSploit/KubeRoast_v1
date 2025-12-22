@@ -37,6 +37,21 @@ def scan_pod_security(pod) -> List[Finding]:
         read_only_rootfs = getattr(sc, "read_only_root_filesystem", None) if sc else None
         caps_add = set(getattr(getattr(sc, "capabilities", None), "add", []) or []) if sc else set()
 
+        # Check seccomp profile
+        seccomp_profile = getattr(sc, "seccomp_profile", None) if sc else None
+        # Also check pod-level seccomp
+        pod_sc = getattr(spec, "security_context", None)
+        pod_seccomp = getattr(pod_sc, "seccomp_profile", None) if pod_sc else None
+
+        # Check AppArmor annotations
+        annotations = getattr(pod.metadata, "annotations", {}) or {}
+        apparmor_key = f"container.apparmor.security.beta.kubernetes.io/{c.name}"
+        apparmor_profile = annotations.get(apparmor_key, None)
+
+        # Check resource limits
+        resources = getattr(c, "resources", None)
+        limits = getattr(resources, "limits", None) if resources else None
+
         if privileged:
             findings.append(Finding(
                 id="POD-PRIV",
@@ -103,6 +118,48 @@ def scan_pod_security(pod) -> List[Finding]:
                 references=["https://kubernetes.io/docs/concepts/security/pod-security-standards/"]
             ))
 
+        # Check for seccomp profile
+        if not seccomp_profile and not pod_seccomp:
+            findings.append(Finding(
+                id="POD-NO-SECCOMP",
+                title="No seccomp profile configured",
+                description="Container lacks seccomp profile, allowing all syscalls which increases attack surface.",
+                severity="medium",
+                category="Pod Security",
+                namespace=ns,
+                resource=f"pod/{pname}::{name}",
+                remediation="Set seccompProfile to RuntimeDefault or Localhost with a custom profile.",
+                references=["https://kubernetes.io/docs/tutorials/security/seccomp/"]
+            ))
+
+        # Check for AppArmor profile
+        if not apparmor_profile:
+            findings.append(Finding(
+                id="POD-NO-APPARMOR",
+                title="No AppArmor profile configured",
+                description="Container lacks AppArmor profile for mandatory access control.",
+                severity="low",
+                category="Pod Security",
+                namespace=ns,
+                resource=f"pod/{pname}::{name}",
+                remediation="Add AppArmor annotation: container.apparmor.security.beta.kubernetes.io/<container>: runtime/default",
+                references=["https://kubernetes.io/docs/tutorials/security/apparmor/"]
+            ))
+
+        # Check for resource limits
+        if not limits:
+            findings.append(Finding(
+                id="POD-NO-LIMITS",
+                title="No resource limits configured",
+                description="Container lacks CPU/memory limits, risking resource exhaustion and DoS.",
+                severity="medium",
+                category="Pod Security",
+                namespace=ns,
+                resource=f"pod/{pname}::{name}",
+                remediation="Set resources.limits.cpu and resources.limits.memory to prevent resource exhaustion.",
+                references=["https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/"]
+            ))
+
     # hostPath volumes
     for v in (spec.volumes or []):
         if getattr(v, "host_path", None):
@@ -118,16 +175,18 @@ def scan_pod_security(pod) -> List[Finding]:
                 references=["https://kubernetes.io/docs/concepts/storage/volumes/#hostpath"]
             ))
 
-    if getattr(spec, "automount_service_account_token", None) is True:
+    # Check if SA token automounting is NOT explicitly disabled (default is True)
+    automount_token = getattr(spec, "automount_service_account_token", None)
+    if automount_token is not False:
         findings.append(Finding(
             id="POD-SATOKEN",
-            title="automountServiceAccountToken=true",
-            description="Pod automatically mounts a service account token, increasing credential theft risk.",
-            severity="medium",
+            title="Service account token automounting not disabled",
+            description="Pod does not explicitly disable automountServiceAccountToken (default is true), increasing credential theft risk.",
+            severity="low",
             category="Pod Security",
             namespace=ns,
             resource=f"pod/{pname}",
-            remediation="Set automountServiceAccountToken=false and use projected tokens when needed.",
+            remediation="Set automountServiceAccountToken=false unless the pod needs to access the Kubernetes API. Use projected tokens when needed.",
             references=["https://kubernetes.io/docs/concepts/security/pod-security-standards/"]
         ))
 
