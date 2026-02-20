@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kuberoast"
+version = "0.2.0"
+description = "Offensive Kubernetes misconfiguration & attack-path scanner"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "SnailSploit | Kai Aizen"},
+]
+dependencies = [
+    "kubernetes>=28.0",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[project.scripts]
+kuberoast = "kuberoast.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["kuberoast*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

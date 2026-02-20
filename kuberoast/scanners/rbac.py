@@ -3,6 +3,7 @@ from collections import defaultdict
 from ..utils.findings import Finding
 
 SUS_VERBS_ESCALATE = {"escalate", "bind", "impersonate"}
+WRITE_VERBS = {"create", "update", "patch", "delete", "*"}
 SUS_RESOURCES = {"clusterroles", "clusterrolebindings", "roles", "rolebindings", "secrets", "pods", "pods/exec", "pods/attach"}
 
 def _rule_sets(rule) -> Tuple[Set[str], Set[str]]:
@@ -69,13 +70,28 @@ def scan_rbac(roles, croles, rbs, crbs) -> List[Finding]:
                     remediation="Avoid '*' in verbs/resources; specify only what is needed.",
                     references=["https://kubernetes.io/docs/reference/access-authn-authz/rbac/"]
                 ))
-            if SUS_VERBS_ESCALATE & verbs or (SUS_RESOURCES & resources):
+            # Escalation verbs (escalate/bind/impersonate) are always suspicious
+            esc_verbs = SUS_VERBS_ESCALATE & verbs
+            if esc_verbs:
                 findings.append(Finding(
-                    id="RBAC-SENSITIVE-VERB-RES",
-                    title="Sensitive RBAC verbs/resources present",
-                    description=f"{scope}/{role.metadata.name} has verbs {sorted(verbs & SUS_VERBS_ESCALATE)} or resources {sorted(resources & SUS_RESOURCES)}.",
+                    id="RBAC-ESCALATION-VERB",
+                    title="RBAC escalation verbs present",
+                    description=f"{scope}/{role.metadata.name} has escalation verbs: {sorted(esc_verbs)}.",
+                    severity="critical", category="RBAC",
+                    remediation="Remove escalate/bind/impersonate verbs; these enable privilege escalation.",
+                    references=[
+                        "https://raesene.github.io/blog/2021/01/16/Getting-Into-A-Bind-with-Kubernetes/"
+                    ]
+                ))
+            # Write access to sensitive resources (not just read)
+            sus_res = SUS_RESOURCES & resources
+            if sus_res and (WRITE_VERBS & verbs):
+                findings.append(Finding(
+                    id="RBAC-SENSITIVE-WRITE",
+                    title="Write access to sensitive RBAC resources",
+                    description=f"{scope}/{role.metadata.name} has write verbs {sorted(WRITE_VERBS & verbs)} on sensitive resources {sorted(sus_res)}.",
                     severity="high", category="RBAC",
-                    remediation="Audit principals bound to this role; split privileges and remove escalation paths.",
+                    remediation="Audit principals bound to this role; split privileges and restrict write access to sensitive resources.",
                     references=[
                         "https://raesene.github.io/blog/2021/01/16/Getting-Into-A-Bind-with-Kubernetes/"
                     ]
