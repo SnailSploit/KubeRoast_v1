@@ -78,12 +78,14 @@ def scan_pod_security(pod) -> List[Finding]:
                 references=["https://kubernetes.io/docs/concepts/security/pod-security-standards/"]
             ))
 
-        if allow_pe is True:
+        # allowPrivilegeEscalation defaults to true when not set, so flag both
+        # explicit True and unset (None) — only silence when explicitly False
+        if allow_pe is not False:
             findings.append(Finding(
                 id="POD-PE",
-                title="allowPrivilegeEscalation=true",
-                description="Linux no_new_privs not enforced; process may gain more privileges.",
-                severity="high",
+                title="allowPrivilegeEscalation not disabled",
+                description="allowPrivilegeEscalation is not set to false; process may gain more privileges via setuid/setgid binaries.",
+                severity="high" if allow_pe is True else "medium",
                 category="Pod Security",
                 namespace=ns,
                 resource=f"pod/{pname}::{name}",
@@ -91,11 +93,13 @@ def scan_pod_security(pod) -> List[Finding]:
                 references=["https://kubernetes.io/docs/concepts/security/pod-security-standards/"]
             ))
 
-        if read_only_rootfs is False:
+        # readOnlyRootFilesystem defaults to false when not set, so flag both
+        # explicit False and unset (None) — only silence when explicitly True
+        if read_only_rootfs is not True:
             findings.append(Finding(
                 id="POD-RWFS",
                 title="Writable root filesystem",
-                description="Writable root filesystems enable persistence and tampering inside containers.",
+                description="readOnlyRootFilesystem is not enabled; writable root filesystems enable persistence and tampering inside containers.",
                 severity="medium",
                 category="Pod Security",
                 namespace=ns,
