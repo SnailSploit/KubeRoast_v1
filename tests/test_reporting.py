@@ -31,7 +31,7 @@ def test_text_output_grouped_by_severity():
 
 def test_text_output_summary():
     output = text_report.emit(_sample_findings())
-    assert "3 findings" in output
+    assert "3 issues" in output
     assert "1 critical" in output
 
 

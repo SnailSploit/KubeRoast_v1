@@ -1,38 +1,72 @@
-<p align="center">
-  <img src="https://img.shields.io/badge/python-3.9%2B-blue?style=flat-square&logo=python&logoColor=white" alt="Python 3.9+">
-  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT License">
-  <img src="https://img.shields.io/badge/tests-146%20passed-brightgreen?style=flat-square" alt="Tests">
-  <img src="https://img.shields.io/badge/version-0.3.0-orange?style=flat-square" alt="Version">
-  <img src="https://img.shields.io/badge/SARIF-v2.1.0-blueviolet?style=flat-square" alt="SARIF v2.1.0">
-  <img src="https://img.shields.io/badge/CIS-K8s%20Benchmark-informational?style=flat-square" alt="CIS Kubernetes Benchmark">
-  <img src="https://img.shields.io/badge/MITRE-ATT%26CK-red?style=flat-square" alt="MITRE ATT&CK">
-</p>
+<div align="center">
 
-<h1 align="center">KubeRoast</h1>
+```
+ ██╗  ██╗██╗   ██╗██████╗ ███████╗██████╗  ██████╗  █████╗ ███████╗████████╗
+ ██║ ██╔╝██║   ██║██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗██╔════╝╚══██╔══╝
+ █████╔╝ ██║   ██║██████╔╝█████╗  ██████╔╝██║   ██║███████║███████╗   ██║
+ ██╔═██╗ ██║   ██║██╔══██╗██╔══╝  ██╔══██╗██║   ██║██╔══██║╚════██║   ██║
+ ██║  ██╗╚██████╔╝██████╔╝███████╗██║  ██║╚██████╔╝██║  ██║███████║   ██║
+ ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝   ╚═╝
+```
 
-<p align="center">
-  <strong>Red-team Kubernetes misconfiguration & attack-path scanner</strong><br>
-  Fast, opinionated, read-only. Built for real-world escalation paths.
-</p>
+**Offensive Kubernetes misconfig & attack-path scanner.**
+Fast · opinionated · read-only · built for real-world escalation paths.
 
-<p align="center">
-  <a href="#quick-start">Quick Start</a> &bull;
-  <a href="#what-it-finds">What It Finds</a> &bull;
-  <a href="#usage">Usage</a> &bull;
-  <a href="#cicd-integration">CI/CD</a> &bull;
-  <a href="#output-formats">Output</a> &bull;
-  <a href="#contributing">Contributing</a>
-</p>
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue?style=for-the-badge&logo=python&logoColor=white)](#)
+[![License MIT](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](./LICENSE)
+[![Version 0.3.0](https://img.shields.io/badge/version-0.3.0-orange?style=for-the-badge)](./CHANGELOG.md)
+[![Tests 146](https://img.shields.io/badge/tests-146%20passing-brightgreen?style=for-the-badge)](#)
+
+[![SARIF v2.1.0](https://img.shields.io/badge/output-SARIF%20v2.1.0-blueviolet?style=flat-square)](#sarif)
+[![CIS Kubernetes](https://img.shields.io/badge/maps_to-CIS%20Kubernetes-informational?style=flat-square)](#compliance-mappings)
+[![MITRE ATT&CK](https://img.shields.io/badge/maps_to-MITRE%20ATT%26CK-red?style=flat-square)](#compliance-mappings)
+[![CWE](https://img.shields.io/badge/maps_to-CWE-yellow?style=flat-square)](#compliance-mappings)
+
+[Quick Start](#quick-start) ·
+[What It Finds](#what-it-finds) ·
+[Usage](#usage) ·
+[CI/CD](#cicd-integration) ·
+[Output](#output-formats) ·
+[Contributing](#contributing)
+
+</div>
 
 ---
 
-> **Ethical use only.** Run KubeRoast only on clusters you own or have explicit written permission to test.
+> ⚠️ **Ethical use only.** Run KubeRoast only on clusters you own or have explicit written permission to test.
 
 ## Why KubeRoast
 
 Most Kubernetes security scanners generate noise. KubeRoast focuses on **what actually gets you owned** — privilege escalation paths, exposed kubelets, over-permissioned RBAC, network services open to the internet, and secrets sitting in plain sight. It reads, never writes. Safe to run in production.
 
 Every finding is automatically mapped to the **CIS Kubernetes Benchmark**, **MITRE ATT&CK for Containers**, and **CWE**, and reports can be emitted as **SARIF v2.1.0** for direct upload to GitHub code scanning, **JUnit XML** for CI test dashboards, **CSV** for analytics, plus the original JSON / text / HTML formats. KubeRoast also runs **offline against YAML/JSON manifests** so you can shift-left in PR pipelines.
+
+### What it looks like
+
+```text
+ ██╗  ██╗██╗   ██╗██████╗ ███████╗██████╗  ██████╗  █████╗ ███████╗████████╗
+ ██║ ██╔╝██║   ██║██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗██╔════╝╚══██╔══╝
+ █████╔╝ ██║   ██║██████╔╝█████╗  ██████╔╝██║   ██║███████║███████╗   ██║
+ ██╔═██╗ ██║   ██║██╔══██╗██╔══╝  ██╔══██╗██║   ██║██╔══██║╚════██║   ██║
+ ██║  ██╗╚██████╔╝██████╔╝███████╗██║  ██║╚██████╔╝██║  ██║███████║   ██║
+ ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝   ╚═╝
+ v0.3.0  •  Offensive Kubernetes misconfig & attack-path scanner
+
+KubeRoast scan results
+────────────────────────────────────────────────────────────────────────
+Found 17 issues — 4 critical · 8 high · 5 medium
+
+✖ CRITICAL (4)
+──────────────
+  [CRITICAL] Privileged container (POD-PRIV)
+    Resource    pod/insecure-demo::app
+    Namespace   default
+    Description Container runs in privileged mode, granting broad access to the host kernel.
+    Remediation Remove privileged=true. Grant narrow capabilities only if needed.
+    CIS         CIS-K8s-5.2.1, CIS-K8s-5.2.2
+    MITRE       T1611, T1610
+    CWE         CWE-250, CWE-269
+```
 
 ## Quick Start
 

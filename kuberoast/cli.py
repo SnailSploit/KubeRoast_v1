@@ -32,6 +32,7 @@ from .utils.kube import (
     load_clients,
 )
 from .utils.manifests import load_manifests
+from .utils.style import print_banner
 
 logger = logging.getLogger("kuberoast")
 
@@ -149,8 +150,11 @@ def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(
         prog="kuberoast",
         description="KubeRoast — offensive Kubernetes misconfiguration & attack-path scanner",
+        epilog="Run safely. Read-only by design. Ethical use only.",
     )
     ap.add_argument("--version", action="version", version=f"kuberoast {__version__}")
+    ap.add_argument("--no-banner", action="store_true",
+                    help="Suppress the startup banner")
     ap.add_argument("--report", choices=sorted(REPORT_FORMATS.keys()), default="json",
                     help="Output format")
     ap.add_argument("--out", help="Write report to file (required for HTML/SARIF/JUnit/CSV)")
@@ -189,6 +193,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         datefmt="%Y-%m-%dT%H:%M:%S%z",
         stream=sys.stderr,
     )
+
+    # Banner: only when running interactively to text/html, never when piping
+    # machine-readable output, and never under --quiet or --no-banner.
+    if (
+        not args.no_banner
+        and not args.quiet
+        and args.report in {"text", "html"}
+        and sys.stderr.isatty()
+    ):
+        print_banner()
 
     if args.report in {"html", "sarif", "junit", "csv"} and not args.out:
         logger.error("--report %s requires --out FILE", args.report)
