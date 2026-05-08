@@ -37,6 +37,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   metadata when present.
 - HTML reporter redesigned with a summary-stats header and tag chips.
 
+### Tests
+- 146 tests passing (38 baseline → 146 with advanced suites).
+- New test categories:
+  - **End-to-end golden tests** against the bundled `examples/` manifests.
+  - **Property-based fuzzing** (Hypothesis) of the manifest parser and
+    scanners — random valid manifests must not crash any scanner.
+  - **Scanner contract tests** — every scanner returns Findings with
+    valid IDs, severities, categories, remediations, and (where mapped)
+    correctly-formatted CIS / MITRE / CWE references.
+  - **Severity matrix tests** — comprehensive `--fail-on` and
+    `--min-severity` interaction matrix.
+  - **SARIF v2.1.0 schema validation** — output is validated against
+    the official OASIS SARIF schema.
+  - **Performance regression tests** — 1000-pod scans must complete in
+    bounded time; deselect with `-m "not performance"`.
+
 ### Notes
 This release is backwards-compatible at the CLI level: existing
 `--report {json,text,html}` flows continue to work.

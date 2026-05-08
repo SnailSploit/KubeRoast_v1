@@ -1,4 +1,4 @@
-.PHONY: install dev test lint format coverage build docker clean help
+.PHONY: install dev test test-fast test-perf lint format coverage build docker clean help
 
 PYTHON ?= python
 IMAGE ?= kuberoast
@@ -8,7 +8,9 @@ help:
 	@echo "Available targets:"
 	@echo "  install    Install package (production)"
 	@echo "  dev        Install package with dev dependencies"
-	@echo "  test       Run pytest"
+	@echo "  test       Run all pytest tests"
+	@echo "  test-fast  Run pytest excluding performance tests"
+	@echo "  test-perf  Run only performance regression tests"
 	@echo "  coverage   Run pytest with coverage"
 	@echo "  lint       Run ruff lint checks"
 	@echo "  format     Auto-format code with ruff"
@@ -24,6 +26,12 @@ dev:
 
 test:
 	$(PYTHON) -m pytest -v
+
+test-fast:
+	$(PYTHON) -m pytest -v -m "not performance"
+
+test-perf:
+	$(PYTHON) -m pytest -v -m performance
 
 coverage:
 	$(PYTHON) -m pytest --cov=kuberoast --cov-report=term-missing --cov-report=html

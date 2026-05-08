@@ -1,7 +1,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/python-3.9%2B-blue?style=flat-square&logo=python&logoColor=white" alt="Python 3.9+">
   <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT License">
-  <img src="https://img.shields.io/badge/tests-78%20passed-brightgreen?style=flat-square" alt="Tests">
+  <img src="https://img.shields.io/badge/tests-146%20passed-brightgreen?style=flat-square" alt="Tests">
   <img src="https://img.shields.io/badge/version-0.3.0-orange?style=flat-square" alt="Version">
   <img src="https://img.shields.io/badge/SARIF-v2.1.0-blueviolet?style=flat-square" alt="SARIF v2.1.0">
   <img src="https://img.shields.io/badge/CIS-K8s%20Benchmark-informational?style=flat-square" alt="CIS Kubernetes Benchmark">
@@ -398,11 +398,19 @@ tests/
   test_secrets.py             # Secret scanner unit tests
   test_pss.py                 # PSS scanner unit tests
   test_compliance.py          # Compliance enrichment tests
-  test_sarif.py               # SARIF v2.1.0 schema/level/score tests
+  test_sarif.py               # SARIF level/score/tag tests
+  test_sarif_schema.py        # SARIF validated against official OASIS schema
   test_junit_csv.py           # JUnit and CSV output tests
   test_manifests.py           # Offline manifest loading tests
+  test_property_manifests.py  # Hypothesis property-based fuzzing
+  test_scanner_contracts.py   # Cross-scanner Finding-shape contract tests
+  test_severity_matrix.py     # --fail-on / --min-severity matrix
+  test_e2e_examples.py        # Golden tests against examples/
+  test_performance.py         # Perf regression (1000 pods etc.)
   test_cli.py                 # CLI flag, exit-code, and end-to-end tests
   test_reporting.py           # Output format tests
+  fixtures/
+    sarif-2.1.0-schema.json   # OASIS SARIF v2.1.0 schema (bundled)
 .github/workflows/
   ci.yml                      # Test matrix (3.9–3.12), ruff, build, Docker
   security-scan.yml           # Example: scan manifests + upload SARIF

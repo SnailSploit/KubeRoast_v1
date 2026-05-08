@@ -53,6 +53,8 @@ dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
     "ruff>=0.4.0",
+    "hypothesis>=6.0",
+    "jsonschema>=4.0",
 ]
 
 [project.urls]
@@ -71,6 +73,9 @@ testpaths = ["tests"]
 addopts = [
     "--strict-markers",
     "-ra",
+]
+markers = [
+    "performance: scaling/perf-regression tests (deselect with '-m \"not performance\"')",
 ]
 
 [tool.coverage.run]
