@@ -1,6 +1,8 @@
-from typing import List, Dict, Set, Tuple, DefaultDict
 from collections import defaultdict
+from typing import DefaultDict, Dict, List, Set, Tuple
+
 from ..utils.findings import Finding
+
 
 def _principal_id(kind: str, name: str, namespace: str = None) -> str:
     if kind == "ServiceAccount" and namespace:

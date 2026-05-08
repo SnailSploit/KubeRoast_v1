@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kuberoast"
-version = "0.2.0"
+version = "0.3.0"
 description = "Offensive Kubernetes misconfiguration & attack-path scanner"
 readme = "README.md"
 license = {text = "MIT"}
@@ -12,16 +12,55 @@ requires-python = ">=3.9"
 authors = [
     {name = "SnailSploit | Kai Aizen"},
 ]
+keywords = [
+    "kubernetes",
+    "security",
+    "scanner",
+    "rbac",
+    "audit",
+    "compliance",
+    "cis-benchmark",
+    "mitre-attack",
+    "sarif",
+    "devsecops",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: System Administrators",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: System :: Monitoring",
+    "Topic :: System :: Systems Administration",
+]
 dependencies = [
     "kubernetes>=28.0",
     "pydantic>=2.0",
+    "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
+    "ruff>=0.4.0",
+    "hypothesis>=6.0",
+    "jsonschema>=4.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/SnailSploit/KubeRoast_v1"
+Repository = "https://github.com/SnailSploit/KubeRoast_v1"
+Issues = "https://github.com/SnailSploit/KubeRoast_v1/issues"
 
 [project.scripts]
 kuberoast = "kuberoast.cli:main"
@@ -31,3 +70,52 @@ include = ["kuberoast*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = [
+    "--strict-markers",
+    "-ra",
+]
+markers = [
+    "performance: scaling/perf-regression tests (deselect with '-m \"not performance\"')",
+]
+
+[tool.coverage.run]
+source = ["kuberoast"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "B",
+    "S",
+]
+ignore = [
+    "E501",
+    "S101",
+    "S603",
+    "S607",
+    # PEP 585 / PEP 604 generics not enforced — supports Python 3.9 syntax
+    "UP006",
+    "UP007",
+    "UP035",
+    # "secret_type" string is a Kubernetes API field, not a credential
+    "S105",
+    # Bare except / try-pass in defensive paths
+    "S110",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S", "B", "E741"]

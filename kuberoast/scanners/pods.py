@@ -1,6 +1,7 @@
 from typing import List, Set
-from .shared import iter_containers
+
 from ..utils.findings import Finding
+from .shared import iter_containers
 
 DANGEROUS_CAPS: Set[str] = {
     "SYS_ADMIN","SYS_MODULE","SYS_PTRACE","NET_ADMIN","DAC_READ_SEARCH","SYS_RAWIO"

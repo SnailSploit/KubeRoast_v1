@@ -1,5 +1,5 @@
-from typing import List, Dict, Set, Tuple, DefaultDict
-from collections import defaultdict
+from typing import List, Set, Tuple
+
 from ..utils.findings import Finding
 
 SUS_VERBS_ESCALATE = {"escalate", "bind", "impersonate"}
@@ -21,7 +21,6 @@ def scan_rbac(roles, croles, rbs, crbs) -> List[Finding]:
         role_name = f"{role_ref.kind}/{role_ref.name}"
         bname = f"{'CRB' if is_cluster else 'RB'}/{binding.metadata.name}"
         for s in (binding.subjects or []):
-            subj = f"{s.kind}:{s.namespace+'/'+s.name if getattr(s,'namespace',None) else s.name}"
             if s.kind == "Group" and s.name in {"system:unauthenticated","system:authenticated","*"}:
                 findings.append(Finding(
                     id="RBAC-BROAD-GROUP",

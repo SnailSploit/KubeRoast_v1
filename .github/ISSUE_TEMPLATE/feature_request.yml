@@ -1,0 +1,25 @@
+name: Feature request
+description: Suggest a new check, output, or capability
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    id: references
+    attributes:
+      label: References / prior art
+      description: CIS controls, MITRE ATT&CK techniques, blog posts, CVEs, etc.

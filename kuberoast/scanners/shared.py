@@ -1,4 +1,6 @@
-from typing import Iterator, Tuple
+from collections.abc import Iterator
+from typing import Tuple
+
 
 def iter_containers(pod) -> Iterator[Tuple[object, str]]:
     # main containers

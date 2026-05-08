@@ -1,7 +1,9 @@
-from pydantic import BaseModel, Field
-from typing import List, Optional, Literal, Dict
+from typing import Dict, List, Literal, Optional
 
-Severity = Literal["info","low","medium","high","critical"]
+from pydantic import BaseModel, Field
+
+Severity = Literal["info", "low", "medium", "high", "critical"]
+
 
 class Finding(BaseModel):
     id: str
@@ -14,3 +16,15 @@ class Finding(BaseModel):
     metadata: Dict[str, str] = Field(default_factory=dict)
     remediation: Optional[str] = None
     references: List[str] = Field(default_factory=list)
+    cis_controls: List[str] = Field(default_factory=list)
+    mitre_attack: List[str] = Field(default_factory=list)
+    cwe: List[str] = Field(default_factory=list)
+
+
+SEVERITY_TO_CVSS: Dict[str, float] = {
+    "critical": 9.5,
+    "high": 7.5,
+    "medium": 5.0,
+    "low": 3.0,
+    "info": 0.0,
+}

@@ -1,5 +1,7 @@
 from typing import List
+
 from ..utils.findings import Finding
+
 
 def scan_services(services) -> List[Finding]:
     """Scan Kubernetes Services for network exposure risks."""

@@ -1,6 +1,7 @@
 from types import SimpleNamespace
-from kuberoast.scanners.network import scan_services, scan_ingresses
-from tests.conftest import make_service, make_ingress
+
+from kuberoast.scanners.network import scan_ingresses, scan_services
+from tests.conftest import make_ingress, make_service
 
 
 def test_nodeport_flagged():

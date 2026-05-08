@@ -1,33 +1,72 @@
-<p align="center">
-  <img src="https://img.shields.io/badge/python-3.9%2B-blue?style=flat-square&logo=python&logoColor=white" alt="Python 3.9+">
-  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT License">
-  <img src="https://img.shields.io/badge/tests-38%20passed-brightgreen?style=flat-square" alt="Tests">
-  <img src="https://img.shields.io/badge/version-0.2.0-orange?style=flat-square" alt="Version">
-</p>
+<div align="center">
 
-<h1 align="center">KubeRoast</h1>
+```
+ ██╗  ██╗██╗   ██╗██████╗ ███████╗██████╗  ██████╗  █████╗ ███████╗████████╗
+ ██║ ██╔╝██║   ██║██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗██╔════╝╚══██╔══╝
+ █████╔╝ ██║   ██║██████╔╝█████╗  ██████╔╝██║   ██║███████║███████╗   ██║
+ ██╔═██╗ ██║   ██║██╔══██╗██╔══╝  ██╔══██╗██║   ██║██╔══██║╚════██║   ██║
+ ██║  ██╗╚██████╔╝██████╔╝███████╗██║  ██║╚██████╔╝██║  ██║███████║   ██║
+ ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝   ╚═╝
+```
 
-<p align="center">
-  <strong>Red-team Kubernetes misconfiguration & attack-path scanner</strong><br>
-  Fast, opinionated, read-only. Built for real-world escalation paths.
-</p>
+**Offensive Kubernetes misconfig & attack-path scanner.**
+Fast · opinionated · read-only · built for real-world escalation paths.
 
-<p align="center">
-  <a href="#quick-start">Quick Start</a> &bull;
-  <a href="#what-it-finds">What It Finds</a> &bull;
-  <a href="#usage">Usage</a> &bull;
-  <a href="#cicd-integration">CI/CD</a> &bull;
-  <a href="#output-formats">Output</a> &bull;
-  <a href="#contributing">Contributing</a>
-</p>
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue?style=for-the-badge&logo=python&logoColor=white)](#)
+[![License MIT](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](./LICENSE)
+[![Version 0.3.0](https://img.shields.io/badge/version-0.3.0-orange?style=for-the-badge)](./CHANGELOG.md)
+[![Tests 146](https://img.shields.io/badge/tests-146%20passing-brightgreen?style=for-the-badge)](#)
+
+[![SARIF v2.1.0](https://img.shields.io/badge/output-SARIF%20v2.1.0-blueviolet?style=flat-square)](#sarif)
+[![CIS Kubernetes](https://img.shields.io/badge/maps_to-CIS%20Kubernetes-informational?style=flat-square)](#compliance-mappings)
+[![MITRE ATT&CK](https://img.shields.io/badge/maps_to-MITRE%20ATT%26CK-red?style=flat-square)](#compliance-mappings)
+[![CWE](https://img.shields.io/badge/maps_to-CWE-yellow?style=flat-square)](#compliance-mappings)
+
+[Quick Start](#quick-start) ·
+[What It Finds](#what-it-finds) ·
+[Usage](#usage) ·
+[CI/CD](#cicd-integration) ·
+[Output](#output-formats) ·
+[Contributing](#contributing)
+
+</div>
 
 ---
 
-> **Ethical use only.** Run KubeRoast only on clusters you own or have explicit written permission to test.
+> ⚠️ **Ethical use only.** Run KubeRoast only on clusters you own or have explicit written permission to test.
 
 ## Why KubeRoast
 
 Most Kubernetes security scanners generate noise. KubeRoast focuses on **what actually gets you owned** — privilege escalation paths, exposed kubelets, over-permissioned RBAC, network services open to the internet, and secrets sitting in plain sight. It reads, never writes. Safe to run in production.
+
+Every finding is automatically mapped to the **CIS Kubernetes Benchmark**, **MITRE ATT&CK for Containers**, and **CWE**, and reports can be emitted as **SARIF v2.1.0** for direct upload to GitHub code scanning, **JUnit XML** for CI test dashboards, **CSV** for analytics, plus the original JSON / text / HTML formats. KubeRoast also runs **offline against YAML/JSON manifests** so you can shift-left in PR pipelines.
+
+### What it looks like
+
+```text
+ ██╗  ██╗██╗   ██╗██████╗ ███████╗██████╗  ██████╗  █████╗ ███████╗████████╗
+ ██║ ██╔╝██║   ██║██╔══██╗██╔════╝██╔══██╗██╔═══██╗██╔══██╗██╔════╝╚══██╔══╝
+ █████╔╝ ██║   ██║██████╔╝█████╗  ██████╔╝██║   ██║███████║███████╗   ██║
+ ██╔═██╗ ██║   ██║██╔══██╗██╔══╝  ██╔══██╗██║   ██║██╔══██║╚════██║   ██║
+ ██║  ██╗╚██████╔╝██████╔╝███████╗██║  ██║╚██████╔╝██║  ██║███████║   ██║
+ ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝   ╚═╝
+ v0.3.0  •  Offensive Kubernetes misconfig & attack-path scanner
+
+KubeRoast scan results
+────────────────────────────────────────────────────────────────────────
+Found 17 issues — 4 critical · 8 high · 5 medium
+
+✖ CRITICAL (4)
+──────────────
+  [CRITICAL] Privileged container (POD-PRIV)
+    Resource    pod/insecure-demo::app
+    Namespace   default
+    Description Container runs in privileged mode, granting broad access to the host kernel.
+    Remediation Remove privileged=true. Grant narrow capabilities only if needed.
+    CIS         CIS-K8s-5.2.1, CIS-K8s-5.2.2
+    MITRE       T1611, T1610
+    CWE         CWE-250, CWE-269
+```
 
 ## Quick Start
 
@@ -37,11 +76,24 @@ git clone https://github.com/SnailSploit/KubeRoast_v1.git
 cd KubeRoast_v1
 pip install -e .
 
-# Scan your cluster
+# Scan your live cluster
 kuberoast --report text
+
+# Or scan a directory of manifests (no cluster required)
+kuberoast --manifests ./k8s --report text
 ```
 
-That's it. KubeRoast picks up your current kubeconfig context automatically.
+That's it. Live scans use your current kubeconfig context automatically.
+
+### Container
+
+```bash
+docker build -t kuberoast .
+# Scan manifests mounted at /workspace
+docker run --rm -v "$(pwd):/workspace:ro" kuberoast --manifests /workspace --report text
+# Scan a cluster using your local kubeconfig
+docker run --rm -v "$HOME/.kube:/home/kuberoast/.kube:ro" kuberoast --report text
+```
 
 ## What It Finds
 
@@ -127,17 +179,21 @@ kuberoast [OPTIONS]
 
 | Flag | Default | Description |
 |---|---|---|
-| `--report {json,text,html}` | `json` | Output format |
-| `--out FILE` | — | Write report to file (required for HTML) |
+| `--report {json,text,html,sarif,junit,csv}` | `json` | Output format |
+| `--out FILE` | — | Write report to file (required for `html`, `sarif`, `junit`, `csv`) |
+| `--manifests PATH` | — | Scan a directory or file of YAML/JSON manifests instead of a live cluster |
 | `--kubeconfig PATH` | — | Path to kubeconfig (defaults to `~/.kube/config`) |
 | `-n, --namespace NS` | — | Limit scan to a single namespace |
 | `--min-severity {info,low,medium,high,critical}` | `info` | Filter out findings below this severity |
 | `--fail-on {info,low,medium,high,critical}` | — | Exit code 1 if any finding meets this threshold |
+| `--no-compliance` | `false` | Skip CIS / MITRE ATT&CK / CWE enrichment |
 | `--skip-nodes` | `false` | Skip kubelet port probes |
 | `--skip-secrets` | `false` | Skip secret inspection |
 | `--skip-attack-paths` | `false` | Skip RBAC attack-path analysis |
 | `--provider {generic,eks,aks,gke}` | `generic` | Cloud provider hint for remediation wording |
 | `-v, --verbose` | `false` | Progress logging to stderr |
+| `-q, --quiet` | `false` | Suppress non-error logging |
+| `--version` | — | Print version and exit |
 
 ### Examples
 
@@ -166,17 +222,47 @@ kuberoast --fail-on critical --report json > results.json
 kuberoast -v --skip-nodes --report text
 ```
 
+**Offline scan of a manifest directory (no cluster needed):**
+```bash
+kuberoast --manifests ./k8s --report text
+```
+
+**SARIF for GitHub code scanning:**
+```bash
+kuberoast --manifests ./k8s --report sarif --out kuberoast.sarif
+```
+
+**JUnit XML for Jenkins / GitLab / CircleCI test reports:**
+```bash
+kuberoast --report junit --out kuberoast.xml
+```
+
 ## CI/CD Integration
 
 KubeRoast is designed to gate deployments. Use `--fail-on` to set the threshold:
 
 ```yaml
-# GitHub Actions example
-- name: Security scan
+# GitHub Actions — scan manifests in a PR and upload SARIF to code scanning
+- uses: actions/checkout@v4
+
+- name: Install KubeRoast
+  run: pip install kuberoast
+
+- name: Scan manifests
   run: |
-    pip install -e .
-    kuberoast --fail-on high --report json > kuberoast-results.json
+    kuberoast --manifests ./k8s --report sarif --out kuberoast.sarif
+    kuberoast --manifests ./k8s --fail-on high --report json > /dev/null
+
+- name: Upload SARIF
+  if: always()
+  uses: github/codeql-action/upload-sarif@v3
+  with:
+    sarif_file: kuberoast.sarif
+    category: kuberoast
 ```
+
+A ready-to-run version of this workflow lives at
+[`.github/workflows/security-scan.yml`](./.github/workflows/security-scan.yml).
 
 ### Exit Codes
 
@@ -207,14 +293,32 @@ Grouped by severity, with summary line and remediation per finding:
 ```
 
 ### HTML
-Dark-themed report with severity badges, sortable table, and remediation guidance. Open in any browser:
+Dark-themed report with severity stat cards, severity badges, and CIS/MITRE/CWE chips per finding. Open in any browser:
 ```bash
 kuberoast --report html --out report.html && open report.html
 ```
 
+### SARIF
+[SARIF v2.1.0](https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html) for GitHub code scanning, Azure DevOps, and any tool that consumes the standard. Severity is mapped to SARIF `level` (critical/high → `error`, medium → `warning`, low/info → `note`) and a `security-severity` score:
+```bash
+kuberoast --report sarif --out kuberoast.sarif
+```
+
+### JUnit XML
+For Jenkins, GitLab, CircleCI, and other CI test dashboards. Findings are grouped by category as test suites; critical findings emit `<error>`, high findings emit `<failure>`:
+```bash
+kuberoast --report junit --out kuberoast.xml
+```
+
+### CSV
+Flat tabular output with `id, severity, title, category, namespace, resource, description, remediation, cis_controls, mitre_attack, cwe, references`:
+```bash
+kuberoast --report csv --out kuberoast.csv
+```
+
 ## Findings Schema
 
-Every finding follows a structured format:
+Every finding follows a structured format and is automatically enriched with industry-standard control mappings:
 
 ```json
 {
@@ -227,13 +331,26 @@ Every finding follows a structured format:
   "resource": "pod/web-0::nginx",
   "metadata": {},
   "remediation": "Remove privileged=true. Grant narrow capabilities only if needed.",
-  "references": ["https://kubernetes.io/docs/concepts/security/pod-security-standards/"]
+  "references": ["https://kubernetes.io/docs/concepts/security/pod-security-standards/"],
+  "cis_controls": ["CIS-K8s-5.2.1", "CIS-K8s-5.2.2"],
+  "mitre_attack": ["T1611", "T1610"],
+  "cwe": ["CWE-250", "CWE-269"]
 }
 ```
 
 **Severity levels:** `critical` > `high` > `medium` > `low` > `info`
 
 **Categories:** Pod Security, RBAC, AttackPath, Network, Node, Secrets, Policy
+
+### Compliance mappings
+
+Every finding ID is mapped in [`kuberoast/utils/compliance.py`](./kuberoast/utils/compliance.py) to:
+
+- **CIS Kubernetes Benchmark v1.9** controls (e.g. `5.2.1` for privileged containers)
+- **MITRE ATT&CK for Containers** techniques (e.g. `T1611` Escape to Host)
+- **CWE** weakness IDs (e.g. `CWE-250` Execution with Unnecessary Privileges)
+
+Disable enrichment with `--no-compliance` if you need raw findings.
 
 ## Kubernetes RBAC
 
@@ -286,7 +403,9 @@ Secrets and nodes are optional — KubeRoast continues gracefully if those APIs 
 kuberoast/
   cli.py                      # CLI entry point, arg parsing, orchestration
   utils/
-    findings.py               # Pydantic Finding model
+    findings.py               # Pydantic Finding model (with CIS/MITRE/CWE fields)
+    compliance.py             # CIS K8s / MITRE ATT&CK / CWE mappings per finding ID
+    manifests.py              # Offline YAML/JSON manifest loader
     kube.py                   # K8s API clients, pagination, error handling
   scanners/
     pods.py                   # 11 pod-level security checks
@@ -302,14 +421,35 @@ kuberoast/
   reporting/
     json.py                   # JSON output
     text.py                   # Severity-grouped text output
-    html.py                   # Dark-themed HTML report
+    html.py                   # Dark-themed HTML report with stat cards
+    sarif.py                  # SARIF v2.1.0 (GitHub code scanning)
+    junit.py                  # JUnit XML (CI test dashboards)
+    csv_report.py             # CSV (analytics / spreadsheets)
 tests/
   test_pods.py                # Pod scanner unit tests
   test_rbac.py                # RBAC scanner unit tests
   test_network.py             # Network scanner unit tests
   test_secrets.py             # Secret scanner unit tests
   test_pss.py                 # PSS scanner unit tests
+  test_compliance.py          # Compliance enrichment tests
+  test_sarif.py               # SARIF level/score/tag tests
+  test_sarif_schema.py        # SARIF validated against official OASIS schema
+  test_junit_csv.py           # JUnit and CSV output tests
+  test_manifests.py           # Offline manifest loading tests
+  test_property_manifests.py  # Hypothesis property-based fuzzing
+  test_scanner_contracts.py   # Cross-scanner Finding-shape contract tests
+  test_severity_matrix.py     # --fail-on / --min-severity matrix
+  test_e2e_examples.py        # Golden tests against examples/
+  test_performance.py         # Perf regression (1000 pods etc.)
+  test_cli.py                 # CLI flag, exit-code, and end-to-end tests
   test_reporting.py           # Output format tests
+  fixtures/
+    sarif-2.1.0-schema.json   # OASIS SARIF v2.1.0 schema (bundled)
+.github/workflows/
+  ci.yml                      # Test matrix (3.9–3.12), ruff, build, Docker
+  security-scan.yml           # Example: scan manifests + upload SARIF
+Dockerfile                    # Non-root multi-stage container image
+Makefile                      # install / dev / test / coverage / lint / build / docker
 ```
 
 ## Troubleshooting
@@ -324,21 +464,31 @@ tests/
 
 ## Roadmap
 
-- CIS Kubernetes Benchmark tagging
-- Provider-specific remediation (EKS/AKS/GKE)
-- Offline manifest scanning (`--manifests`)
-- Gatekeeper/Kyverno policy inventory & drift
-- MITRE ATT&CK technique tags per finding
-- Dockerfile for containerized scanning
+Shipped in 0.3.0:
+- ✅ CIS Kubernetes Benchmark tagging
+- ✅ MITRE ATT&CK technique tags per finding
+- ✅ CWE weakness IDs per finding
+- ✅ Offline manifest scanning (`--manifests`)
+- ✅ Dockerfile for containerized scanning
+- ✅ SARIF / JUnit / CSV output
+
+Next:
+- Provider-specific remediation (EKS / AKS / GKE)
+- Gatekeeper / Kyverno policy inventory & drift
+- NetworkPolicy gap detection
+- Helm-chart values rendering for `--manifests`
 
 ## Contributing
 
-PRs welcome. Please:
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for the full guide. The short version:
 
-1. Add/update unit tests for each new rule
+1. Add/update unit tests for each new rule (`make test`)
 2. Ground severities in public guidance or reproducible attacker tradecraft
-3. Keep remediation text explicit and actionable
-4. Run `pytest` before submitting
+3. Map new finding IDs to CIS / MITRE / CWE in `kuberoast/utils/compliance.py`
+4. Keep remediation text explicit and actionable
+5. Run `make lint` and `make test` before submitting
+
+To report a security issue, see [SECURITY.md](./SECURITY.md).
 
 ## License
 

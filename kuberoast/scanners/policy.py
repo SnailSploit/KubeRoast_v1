@@ -1,4 +1,5 @@
 from typing import List
+
 from ..utils.findings import Finding
 
 POLICY_ENGINE_CRDS = {

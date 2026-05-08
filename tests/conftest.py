@@ -1,5 +1,4 @@
 """Shared test fixtures providing mock Kubernetes objects."""
-import pytest
 from types import SimpleNamespace
 
 

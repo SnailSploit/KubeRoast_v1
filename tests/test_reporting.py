@@ -1,5 +1,7 @@
+from kuberoast.reporting import html as html_report
+from kuberoast.reporting import json as json_report
+from kuberoast.reporting import text as text_report
 from kuberoast.utils.findings import Finding
-from kuberoast.reporting import json as json_report, text as text_report, html as html_report
 
 
 def _sample_findings():
@@ -29,7 +31,7 @@ def test_text_output_grouped_by_severity():
 
 def test_text_output_summary():
     output = text_report.emit(_sample_findings())
-    assert "3 findings" in output
+    assert "3 issues" in output
     assert "1 critical" in output
 
 

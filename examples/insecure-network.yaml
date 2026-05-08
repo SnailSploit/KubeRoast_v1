@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: open-loadbalancer
+  namespace: default
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: web
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: plain-http
+  namespace: default
+spec:
+  rules:
+    - host: api.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: open-loadbalancer
+                port:
+                  number: 80

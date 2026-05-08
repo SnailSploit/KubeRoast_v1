@@ -1,7 +1,8 @@
 import logging
 import socket
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from typing import List, Tuple, Optional
+from typing import List, Tuple
+
 from ..utils.findings import Finding
 
 logger = logging.getLogger("kuberoast")
