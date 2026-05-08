@@ -1,5 +1,5 @@
 from kuberoast.scanners.pods import scan_pod_security
-from tests.conftest import make_pod, make_container
+from tests.conftest import make_container, make_pod
 
 
 def test_privileged_container_flagged():

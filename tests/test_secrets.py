@@ -1,4 +1,5 @@
 import base64
+
 from kuberoast.scanners.secrets import scan_secrets
 from tests.conftest import make_secret
 

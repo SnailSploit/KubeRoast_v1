@@ -1,4 +1,5 @@
 from typing import List, Set
+
 from ..utils.findings import Finding
 
 PSS_LABELS = [
@@ -19,7 +20,7 @@ def scan_namespace_pss(nslist) -> List[Finding]:
     for ns in nslist:
         ns_name = ns.metadata.name
         labels = (ns.metadata.labels or {})
-        if not any(l in labels for l in PSS_LABELS):
+        if not any(label in labels for label in PSS_LABELS):
             is_system = ns_name in SYSTEM_NAMESPACES
             findings.append(Finding(
                 id="PSS-NOT-ENFORCED",

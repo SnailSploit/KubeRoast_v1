@@ -1,5 +1,7 @@
+from kuberoast.reporting import html as html_report
+from kuberoast.reporting import json as json_report
+from kuberoast.reporting import text as text_report
 from kuberoast.utils.findings import Finding
-from kuberoast.reporting import json as json_report, text as text_report, html as html_report
 
 
 def _sample_findings():

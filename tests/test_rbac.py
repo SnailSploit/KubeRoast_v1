@@ -1,5 +1,5 @@
 from kuberoast.scanners.rbac import scan_rbac
-from tests.conftest import make_role, make_rule, make_binding, make_subject
+from tests.conftest import make_binding, make_role, make_rule, make_subject
 
 
 def test_wildcard_verbs_flagged():

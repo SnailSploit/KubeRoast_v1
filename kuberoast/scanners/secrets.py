@@ -1,5 +1,8 @@
-import base64, re, json
+import base64
+import json
+import re
 from typing import List
+
 from ..utils.findings import Finding
 
 SUSPICIOUS_SECRET_KEYS = re.compile(r"""
